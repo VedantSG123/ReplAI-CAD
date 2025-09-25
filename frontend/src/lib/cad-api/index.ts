@@ -1,7 +1,6 @@
 import { wrap } from 'comlink'
 import type { CurveType, SurfaceType } from 'replicad'
 
-import CadWorker from '@/lib/cad-worker/index.ts?worker'
 import type {
   ExportConfiguration,
   ExportFileTypes,
@@ -51,7 +50,10 @@ export class BuilderApi {
   private workerApi: CadWorkerService
 
   constructor() {
-    this.worker = new CadWorker()
+    this.worker = new Worker(
+      new URL('@/lib/cad-worker/index.worker.ts', import.meta.url),
+      { type: 'module' }
+    )
     this.workerApi = wrap<CadWorkerService>(this.worker)
   }
 
