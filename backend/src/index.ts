@@ -20,7 +20,7 @@ const app = new Elysia()
       auth: true,
     },
   )
-  .listen(5000)
+  .listen(parseInt(process.env.PORT || '5001', 10))
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,

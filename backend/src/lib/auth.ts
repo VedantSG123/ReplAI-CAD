@@ -1,7 +1,8 @@
 import { betterAuth } from 'better-auth'
 import { Elysia } from 'elysia'
 
-import { getPool } from '../utils/db'
+import { overrideBaseUrl } from '../utils/overrideBaseUrl'
+import { getPool } from './db'
 import { sendAuthEmail } from './resend'
 
 export const auth = betterAuth({
@@ -11,18 +12,27 @@ export const auth = betterAuth({
       prompt: 'select_account',
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      redirectURI: `${process.env.BACKEND_URL}/api/auth/callback/google`,
     },
   },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      await sendAuthEmail(user.email, 'reset', url)
+      const modifiedUrl = overrideBaseUrl(
+        url,
+        process.env.BACKEND_URL as string,
+      )
+      await sendAuthEmail(user.email, 'reset', modifiedUrl)
     },
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
-      await sendAuthEmail(user.email, 'signup', url)
+      const modifiedUrl = overrideBaseUrl(
+        url,
+        process.env.BACKEND_URL as string,
+      )
+      await sendAuthEmail(user.email, 'signup', modifiedUrl)
     },
     autoSignInAfterVerification: true,
   },
