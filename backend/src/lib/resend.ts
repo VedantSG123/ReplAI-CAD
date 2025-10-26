@@ -1,6 +1,13 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+let resendInstance: Resend | null = null
+
+const getResendInstance = () => {
+  if (!resendInstance) {
+    resendInstance = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resendInstance
+}
 
 export const sendAuthEmail = async (
   email: string,
@@ -24,6 +31,8 @@ export const sendAuthEmail = async (
       <p style="margin-top: 20px; font-size: 12px; color: #888;">If you did not request this email, you can safely ignore it.</p>
     </div>
   `
+
+  const resend = getResendInstance()
 
   await resend.emails.send({
     from: 'ReplAI CAD <onboarding@resend.dev>',
