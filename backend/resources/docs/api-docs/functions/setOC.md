@@ -1,0 +1,17 @@
+# Function: setOC()
+
+```ts
+function setOC(oc): void;
+```
+
+Defined in: [oclib.ts:7](https://github.com/sgenoud/replicad/blob/24b0570eda7090dd06f76a8083979647be62010e/packages/replicad/src/oclib.ts#L7)
+
+## Parameters
+
+### oc
+
+`OpenCascadeInstance`
+
+## Returns
+
+`void`
