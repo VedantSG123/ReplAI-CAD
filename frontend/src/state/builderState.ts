@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { getBuilderApi } from '@/lib/cad-api'
+import { getBuilderApi } from '@/lib/replicad-api'
 import type { MeshRenderOutput, SvgRenderOutput } from '@/types/cad'
 import { inSeries } from '@/utils/inSeries'
 

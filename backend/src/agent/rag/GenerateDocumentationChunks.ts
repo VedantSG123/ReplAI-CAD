@@ -3,7 +3,7 @@ export type BaseChunkType = {
   source: string
 }
 
-type ApiDocEntityType =
+export type ApiDocEntityType =
   | 'class'
   | 'function'
   | 'variable'
@@ -32,9 +32,9 @@ export class GenerateDocumentationChunks {
     return filteredLines.join('\n')
   }
 
-  private ClassSummaryMatch = /^# Class:[\s\S]*?(?=## Constructors)/
-  private ClassConstructorMatch = /## Constructors[\s\S]*?(?=## |$)/
-  private ClassPropertiesMatch = /## Properties[\s\S]*?(?=## |$)/
+  private ClassSummaryMatch = /^# Class:[\s\S]*?(?=\n## Constructors)/
+  private ClassConstructorMatch = /## Constructors[\s\S]*?(?=\n## |$)/
+  private ClassPropertiesMatch = /## Properties[\s\S]*?(?=\n## |$)/
 
   private chunkClassApiDoc(doc: string, source: string, entityName: string) {
     const cleanedDoc = this.cleanApiDocumentation(doc)
@@ -94,7 +94,7 @@ export class GenerateDocumentationChunks {
     const remainingContent = cleanedDoc.slice(lasKnownSectionEnd).trim()
     // Match all section headers after properties/constructors
     const groupSections = [
-      ...remainingContent.matchAll(/## ([^\n]+)[\s\S]*?(?=(## |$))/g),
+      ...remainingContent.matchAll(/## ([^\n]+)[\s\S]*?(?=(\n## |$))/g),
     ]
 
     for (const section of groupSections) {

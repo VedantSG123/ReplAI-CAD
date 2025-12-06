@@ -109,7 +109,7 @@
 - [SupportedUnit](type-aliases/SupportedUnit.md)
 - [SurfaceType](type-aliases/SurfaceType.md)
 - [DEG2RAD](variables/DEG2RAD.md)
-- [HASH\_CODE\_MAX](variables/HASH_CODE_MAX.md)
+- [HASH_CODE_MAX](variables/HASH_CODE_MAX.md)
 - [makeCompound](variables/makeCompound.md)
 - [RAD2DEG](variables/RAD2DEG.md)
 - [addHolesInFace](functions/addHolesInFace.md)
