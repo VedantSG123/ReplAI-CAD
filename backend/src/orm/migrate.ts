@@ -31,7 +31,7 @@ const main = async () => {
   try {
     // Determine and announce the action
     if (isDown && specificMigration) {
-      const migrationName = specificMigration.replace('.ts', '')
+      const migrationName = specificMigration
       console.log(`⏪ Reverting migrations down to: ${migrationName}...`)
       await umzug.down({ to: migrationName })
     } else if (isDown) {

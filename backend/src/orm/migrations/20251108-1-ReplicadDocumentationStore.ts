@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Sequelize } from 'sequelize'
 
 import type { Migration } from '../migrate'
 
@@ -16,7 +16,7 @@ const up: Migration = async ({ context: queryInterface }) => {
       allowNull: false,
     },
     embedding: {
-      type: 'VECTOR(1536)',
+      type: 'HALFVEC(3584)',
       allowNull: true,
     },
     source: {
@@ -30,17 +30,39 @@ const up: Migration = async ({ context: queryInterface }) => {
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
     },
     updated_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
     },
   })
+
+  // Create HNSW index on embedding column for fast similarity search
+  await queryInterface.sequelize.query(`
+    CREATE INDEX replicad_documentation_store_embedding_idx
+    ON replicad_documentation_store
+    USING hnsw (embedding halfvec_cosine_ops)
+  `)
+
+  // Create GIN index on metadata column for fast JSONB queries
+  await queryInterface.sequelize.query(`
+    CREATE INDEX replicad_documentation_store_metadata_idx
+    ON replicad_documentation_store
+    USING gin (metadata)
+  `)
 }
 
 const down: Migration = async ({ context: queryInterface }) => {
+  // Drop indexes first
+  await queryInterface.sequelize.query(`
+    DROP INDEX IF EXISTS replicad_documentation_store_metadata_idx
+  `)
+  await queryInterface.sequelize.query(`
+    DROP INDEX IF EXISTS replicad_documentation_store_embedding_idx
+  `)
+
   await queryInterface.dropTable('replicad_documentation_store')
 }
 

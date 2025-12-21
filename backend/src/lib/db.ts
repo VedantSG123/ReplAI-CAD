@@ -5,6 +5,7 @@ import type {
   QueryResultRow,
 } from 'pg'
 import { Pool } from 'pg'
+import pgvector from 'pgvector/pg'
 
 function createPool() {
   return new Pool({
@@ -20,7 +21,9 @@ export function getPool() {
     pool.on('error', (err) => {
       console.error('Error with database pool idle client', err)
     })
-    pool.on('connect', () => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    pool.on('connect', async (client) => {
+      await pgvector.registerTypes(client)
       console.debug('New client connected to database pool')
     })
     pool.on('remove', () => {
@@ -72,4 +75,10 @@ export async function getClient() {
 type TrackedClient = PoolClient & {
   lastQuery?: Parameters<PoolClient['query']>
   query: PoolClient['query']
+}
+
+export default {
+  query,
+  getClient,
+  getPool,
 }
