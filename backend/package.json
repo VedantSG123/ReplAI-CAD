@@ -9,7 +9,7 @@
     "dev": "dotenvx run --env-file=env/.env.dev -- bun run --watch src/index.ts",
     "better-auth-migrate:dev": "dotenvx run --env-file=env/.env.dev -- npx @better-auth/cli migrate",
     "migrate:dev": "dotenvx run --env-file=env/.env.dev -- bun src/orm/migrate.ts",
-    "generate-embeddings:dev": "dotenvx run --env-file=env/.env.dev -- bun src/agent/rag/buildVectorStore.ts"
+    "create-api-docs-knowledge-base:dev": "dotenvx run --env-file=env/.env.dev -- bun src/agent/utils/createApiDocsKnowledgeBase.ts"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.49.0",

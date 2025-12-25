@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import type { ApiDocEntityType } from './GenerateDocumentationChunks'
+import type { ApiDocEntityType } from './generateApiDocsChunks'
 
 const DOCS_DIR = path.resolve(__dirname, '../../../resources/docs/api-docs')
 
