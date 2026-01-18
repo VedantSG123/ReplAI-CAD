@@ -1,13 +1,23 @@
-export type ApiDocEntityType =
-  | 'class'
-  | 'function'
-  | 'variable'
-  | 'interface'
-  | 'type-alias'
+export const API_DOC_ENTITY_TYPES = [
+  'class',
+  'function',
+  'variable',
+  'interface',
+  'type-alias',
+] as const
+
+export const API_DOC_CHUNK_ENTITY_TYPES = [
+  ...API_DOC_ENTITY_TYPES,
+  'method',
+] as const
+
+export type ApiDocEntityType = (typeof API_DOC_ENTITY_TYPES)[number]
+
+export type ApiDocChunkEntityType = (typeof API_DOC_CHUNK_ENTITY_TYPES)[number]
 
 export interface ApiDocChunk {
   id: string // e.g. class:CompSolid or method:CompSolid.blobSTL
-  type: ApiDocEntityType | 'method'
+  type: ApiDocChunkEntityType
   name: string // e.g. CompSolid or blobSTL
   content: string // The markdown content
   metadata?: Record<string, string>
