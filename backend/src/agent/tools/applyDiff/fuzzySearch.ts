@@ -2,7 +2,9 @@ import { distance } from 'fastest-levenshtein'
 
 import { normalizeString } from '../../../utils/normalizeString'
 
-function getSimilarityScore(original: string, search: string): number {
+export const FUZZY_THRESHOLD = 1.0
+
+export function getSimilarityScore(original: string, search: string): number {
   if (search.length === 0) {
     return 0
   }

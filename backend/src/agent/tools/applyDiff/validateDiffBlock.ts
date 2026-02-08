@@ -63,10 +63,7 @@ const reportLineMarkerInReplaceContentError = (
   error: getLineMarkerInReplaceContentErrorMessage(marker, lineNumber),
 })
 
-export function validateDiffBlock(diffBlock: string): {
-  success: boolean
-  error?: string
-} {
+export function validateDiffBlock(diffBlock: string): DiffResult {
   const lines = diffBlock.split('\n')
   if (lines.length === 0 || (lines.length === 1 && lines[0].trim() === '')) {
     return { success: false, error: 'Diff block is empty' }
@@ -167,4 +164,9 @@ export function validateDiffBlock(diffBlock: string): {
       error: `ERROR: Diff block is invalid or incomplete. Expected '${state.current === ParsingState.AFTER_SEARCH ? SEPERATOR_STRING : REPLACE_STRING}' at the end of the diff block.`,
     }
   }
+}
+
+export type DiffResult = {
+  success: boolean
+  error?: string
 }
