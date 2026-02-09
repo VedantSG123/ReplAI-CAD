@@ -85,9 +85,10 @@ export const applyDiff = tool({
       ? '\r\n'
       : '\n'
 
-    const codeLines = codeContent.split(/\r?\n/)
+    let codeLines = codeContent.split(/\r?\n/)
 
-    const lineShift = 0
+    let lineShift = 0
+    let appliedDiffsCount = 0
     const diffResults: DiffResult[] = []
 
     for (const replacement of replacementBlocks) {
@@ -253,6 +254,53 @@ export const applyDiff = tool({
         const match = line.match(/^[\t ]*/)
         return match ? match[0] : ''
       })
+
+      const indentedReplaceLines = replaceLines.map((line) => {
+        const originalBaseIndent = originalIndents[0] || ''
+
+        const currentIndentMatch = line.match(/^[\t ]*/)
+        const currentIndent = currentIndentMatch ? currentIndentMatch[0] : ''
+
+        const searchBaseIndent = searchIndents[0] || ''
+
+        const searchBaseLevel = searchBaseIndent.length
+        const currentLevel = currentIndent.length
+        const indentDifference = currentLevel - searchBaseLevel
+
+        // If relative level is negative, remove indentation from matched indent
+        // If positive, add to matched indent
+        const finalIndent =
+          indentDifference < 0
+            ? originalBaseIndent.slice(
+                0,
+                Math.max(0, originalBaseIndent.length + indentDifference),
+              )
+            : originalBaseIndent + ' '.repeat(indentDifference)
+
+        return finalIndent + line.trim()
+      })
+
+      const beforeMatch = codeLines.slice(0, matchIndex)
+      const afterMatch = codeLines.slice(matchIndex + searchLines.length)
+
+      codeLines = [...beforeMatch, ...indentedReplaceLines, ...afterMatch]
+      lineShift = lineShift - matchedLines.length + replaceLines.length
+      appliedDiffsCount++
+    }
+
+    const newContent = codeLines.join(originalLineEndingCharacter)
+
+    if (appliedDiffsCount === 0) {
+      return {
+        success: false,
+        failParts: diffResults,
+      }
+    }
+
+    return {
+      success: true,
+      content: newContent,
+      diffResults,
     }
   },
 })
